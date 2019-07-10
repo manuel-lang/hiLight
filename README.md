@@ -13,4 +13,4 @@ base url: https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx
 | /operationmode | GET | Get the current operation mode (demo or custom) | - |
 |  | PUT | Set the current operation mode (demo or custom) | {"demo":"True"} |
 | /activeuser | GET | Get the currently active user's name | - |
-|  | PUT | Set the currently active user's name | {"name":"Adam"} |
+|  | PUT | Set the currently active user's name | {"username":"Adam"} |
