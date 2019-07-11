@@ -86,23 +86,12 @@
    watch: {
 
      paint: function() {
-       
-
-       /* let dem = this.demo ? "True" : "False";
-        * let det = this.detection ? "True" : "False"; */
-
-       /* axios.put('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/operationmode', {'demo' : dem}); */
-       
+       this.cloud()
      },
 
-     detection: function() {       
-
-       /* let dem = this.demo ? "True" : "False";
-        * let det = this.detection ? "True" : "False";
-        *  */
-       
-       /* axios.put('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/operationmode', {'demo' : dem}); */
-     }
+     detection: function() {
+			 this.cloud()
+		 }
 
      
    },
@@ -110,17 +99,13 @@
    beforeRouteEnter (to, from, next) {
      next(vm => {
        axios.get('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/operationmode')
-            .then(res => {
-              /* vm.demo = res.data == "True" */
-            });
+            .then(vm.load);
      })
    },
    
    beforeRouteUpdate (to, from, next) {
      axios.get('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/operationmode')
-          .then(res => {
-            /* this.demo = res == "True" */
-          });
+          .then(this.load);
        
      next();
      
@@ -128,11 +113,8 @@
 
    mounted () {
      
-     /* axios.get('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/operationmode')
-      *      .then(res => {
-      *        this.demo = res.data == "True"
-      *      });
-      *  */
+     axios.get('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/operationmode')
+					.then(this.load);		 
      
      /* 
       *      this.$nextTick(function () {
@@ -144,7 +126,35 @@
    },
 
    methods : {
+		 
+		 load () {
+			 
+			 for (index = 0; index < res.data.length; ++index) {
+				 if (res[index].id == "paint")
+					 {
+						 this.paint = res[index].demo == "True"
+					 }
 
+				 if (res[index].id == "detection")
+					 {
+						 this.detection = res[index].demo == "True"
+					 }
+			 }
+		 },
+
+		 cloud(){
+			 let paint = this.paint ? "True" : "False";
+			 let detection = this.detection ? "True" : "False";
+
+       axios.put('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/operationmode',
+								 {
+									 'detection' : detection,
+									 'paint':paint
+								 }
+			 );
+			 
+		 },
+		 
      window_update(x,y) {
        
      },
@@ -161,7 +171,6 @@
        }
        
      },
-
      
      update_paint (){
        
