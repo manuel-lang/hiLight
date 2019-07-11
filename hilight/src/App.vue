@@ -1,8 +1,8 @@
 <template>
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
   
-  <header class="mdl-layout__header">
-    <div class="mdl-layout__header-row">
+  <header class="mdl-layout__header ">
+    <div class="mdl-layout__header-row  mdl-layout--fixed-header mdl-layout">
       <span class="mdl-layout-title">HiLight</span>
     </div>
   </header>
@@ -48,11 +48,16 @@
       <router-view></router-view>
     </div>
   </main>
-  
-  <footer class="footer">
+
+  <footer class="footer mdl-mega-footer">
     <img style=" margin:5px;" alt="" width="175" height="45px" src="@/assets/eye.png"/>
-  </footer> 
-  
+  </footer>
+
+    
+    
+    
+    
+    
 </div>
 </template>
 
@@ -102,7 +107,11 @@ export default {
    background: linear-gradient(45deg, #f9f9f9 48%,#dceff4 98%);
    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f9f9f9', endColorstr='#dceff4',GradientType=1 );
    
- } 
+ }
+
+ .main-section{
+   
+ }
 
  .footer {
    border-top: solid 1px rgb(80, 50, 145);

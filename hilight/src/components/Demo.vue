@@ -11,7 +11,7 @@
 
         <toggle-button 
           v-model="detection"
-          color="#82C7EB"
+          color="rgb(165, 205, 80)"
           :sync="true"
           :labels="true"
           @change="update_det"
@@ -31,7 +31,7 @@
 
         <toggle-button 
           v-model="paint"
-          color="#82C7EB"
+          color="rgb(165, 205, 80)"
           :sync="true"
           :labels="true"
           @change="update_paint"/>
@@ -81,7 +81,7 @@
        paint : false,
        detection : false,
        windows : [
-         [0,0,0],
+         [1,0,0],
          [0,0,0]]
      }
    },
@@ -157,9 +157,9 @@
      },
      
      window_update(x,y) {
-       
+
        this.windows[x][y] = (this.windows[x][y] + 1) % 2
-       
+       this.$forceUpdate();
        if (this.windows[x][y] == 1){
          
        }else{
@@ -222,9 +222,12 @@
    background-color : rgb(80, 50, 145);
  }
 
- .card:hover {
-   border : solid 2px rgb(45, 190, 205);
-   background-color : rgb(80, 50, 145);
-   transition: background-color 500ms linear;
- }
+ /* 
+    .card:hover {
+    border : solid 2px rgb(45, 190, 205);
+    background-color : rgb(80, 50, 145);
+    transition: background-color 500ms linear;
+    }
+  */
+ 
 </style>

@@ -17,7 +17,7 @@
     </div>
     <hr/>
 
-    <div v-on:click="changeButter" class="butter-wrapper mdl-shadow--3dp">
+    <div v-dragged.prevent="onDragged"  class="butter-wrapper mdl-shadow--3dp">
       <canvas ref="gameCanvas" id="gameCanvas" height="300" width="300"></canvas>
       <div class="img-hold"></div>
     </div>
@@ -26,8 +26,13 @@
     <hr/>
 
     <!-- Slider with Starting Value -->
-    <input @change="slide" v-model="percent" class="mdl-slider mdl-js-slider" type="range"
-           min="0" max="100" >
+    <!-- <input v-model="percent" class="mdl-slider mdl-js-slider slider" type="range"
+         min="0" max="100" > -->
+    <vue-slider :dot-size=20
+                :enable-cross=false
+                :tooltip=false
+                v-model="percent" class="slider" @callback="updateSlider">
+    </vue-slider>
 
 
     <hr/>
@@ -54,7 +59,8 @@
        custom : false,
        user : '',
        upper : 270,
-       down : 63
+       down : 63,
+       isDragging : false
      }
    },
 
@@ -65,7 +71,8 @@
      },
 
      percent : function(){
-       this.cloud()
+       this.slide()
+       
      }
 
    },
@@ -92,18 +99,40 @@
 
    methods : {
 
+     onDragged : function ({ el, deltaX, deltaY, offsetX, offsetY, clientX, clientY, first, last }) {
+       if (first) {
+         this.isDragging = true
+         return
+      }
+      if (last) {
+        this.isDragging = false
+        return
+      }
+
+       var canvas = this.$refs['gameCanvas'];
+       var rect = canvas.getBoundingClientRect();
+       var x = clientX - rect.left;
+       var y =clientY - rect.top;
+       this.repaint(canvas, canvas.height - y)
+     },
+
      cloud : function () {
+       let cust = this.custom.toString().capitalize()
        let data = {
          "name": this.user,
          "wert" : parseInt(this.percent),
-         "custom" : this.custom.toString().capitalize()
+         "custom" : cust
        }
-       
-  /* console.log(data) */
+ 
+       /* console.log(data) */
        axios.put('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx//profiles/name', data)
             .then(res => {
               /* console.log(res) */
             })
+     },
+
+     updateSlider :function(e){
+       this.cloud()
      },
 
      slide : function (){
@@ -192,9 +221,15 @@
 
 <style scoped>
 
+ .slider .vue-slider-dot  {
+   background: rgb(165, 205, 80);
+   
+ }
+
  .butter-wrapper{
 
    margin-left: 20px;
+   margin: auto;
    
    height : 300px;
    width : 330px;
@@ -225,12 +260,12 @@
 
  }
 
-
  .container {
    perspective: 800px;
    width: 320px;
    margin-top : 7px;
    margin-left : 20px;
+   margin: auto;
    padding : 3px;
    background-color:white;
  }
@@ -315,7 +350,7 @@
  }
 
  .wrapper {
-   position: absolute;
+   margin: auto;
    top : 0px;
  }
 
