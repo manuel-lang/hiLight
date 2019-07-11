@@ -56,7 +56,7 @@
 
    watch: {
      demo: function() {
-       let dem =  this.demo ? "True" : "False";
+       let dem = this.demo ? "True" : "False";
        axios.put('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/operationmode', {'demo' : dem});
      }
    },

@@ -44,7 +44,7 @@
   </div>
   
   <main class="mdl-layout__content">
-    <div class="page-content">
+    <div class="page-content main-section">
       <router-view></router-view>
     </div>
   </main>
@@ -113,9 +113,9 @@ body{
 }
 
 main {
-    text-align: center;
-    margin-top: 40px;
-}
+  text-align: center;
+  margin-top: 2px;
+ }
 
 header {
     margin: 0;
