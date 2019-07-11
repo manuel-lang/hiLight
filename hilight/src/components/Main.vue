@@ -18,7 +18,7 @@
     <hr/>
 
     <div v-on:click="changeButter" class="butter-wrapper mdl-shadow--3dp">
-      <canvas  ref="gameCanvas" id="gameCanvas" height="300" width="300"></canvas>
+      <canvas ref="gameCanvas" id="gameCanvas" height="300" width="300"></canvas>
       <div class="img-hold"></div>
     </div>
 
@@ -38,9 +38,13 @@
 </template>
 
 <script>
-const axios = require('axios');
- export default {
+ const axios = require('axios');
 
+ String.prototype.capitalize = function() {
+     return this.charAt(0).toUpperCase() + this.slice(1)
+  }
+ 
+ export default {
    name: 'hello',
 
    data : function() {
@@ -68,9 +72,9 @@ const axios = require('axios');
 
    beforeRouteEnter (to, from, next) {
      next(vm => {
-			 if (to.params.user !== undefined){
-				 vm.setUser(to.params.user);
-			 }
+       if (to.params.user !== undefined){
+	 vm.setUser(to.params.user);
+       }
        else{
          vm.pollUser()
        }
@@ -78,12 +82,12 @@ const axios = require('axios');
    },
 
    beforeRouteUpdate (to, from, next) {
-		 if (to.params.user !== undefined){
-			 this.setUser(to.params.user)       
-		 }else{
-			 this.pollUser()
+     if (to.params.user !== undefined){
+       this.setUser(to.params.user)       
+     }else{
+       this.pollUser()
      }
-		 next();
+     next();
    },
 
    methods : {
@@ -92,13 +96,14 @@ const axios = require('axios');
        let data = {
          "name": this.user,
          "wert" : parseInt(this.percent),
-         "custom" : this.demo ? "True" : "False"
+         "custom" : this.custom.toString().capitalize()
        }
-       /* console.log(data) */
+       
+  /* console.log(data) */
        axios.put('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx//profiles/name', data)
-              .then(res => {
-                /* console.log(res) */
-              })
+            .then(res => {
+              /* console.log(res) */
+            })
      },
 
      slide : function (){
@@ -139,38 +144,36 @@ const axios = require('axios');
        };
      },
 
-		 pollUser : function(){
-			 axios.get('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/activeuser')
+     pollUser : function(){
+       axios.get('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/activeuser')
             .then(response => {
               this.user = response.data;
-              axios.get("https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/profiles/" + to.params.user)
+              axios.get("https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/profiles/" + this.user)
                    .then(response => {
-                     console.log(response.data)
                      this.percent = response.data.wert
-										 this.custom = response.data.custom
+		     this.custom = response.data.custom == "True";
                      this.slide()
                      this.cloud()
                    });
             });
-		 },
+     },
 
-		 setUser : function(user) {
-			 axios.put('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/activeuser', {"username":user})
+     setUser : function(user) {
+       axios.put('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/activeuser', {"username":user})
        axios.get("https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/profiles/" + user)
             .then(response => {
-              console.log(response.data) 
               this.percent = response.data.wert
-							this.custom = response.data.custom
-              this.user = to.params.user
+	      this.custom = response.data.custom == "True";
+              this.user = response.data.name
               this.slide()
               this.cloud()
-						});
-		 },
+	    });
+     },
 
-		 poll : function (){
-			 pollUser()
-		 }
-		 
+     poll : function (){
+       pollUser()
+     }
+     
 
    },
 

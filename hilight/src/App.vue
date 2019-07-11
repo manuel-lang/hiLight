@@ -147,34 +147,4 @@ export default {
    padding-top: 16px;
  }
 
- .cards {
-   display: flex;
-   flex-direction: row;
-   width : 100%;
-   justify-content: space-evenly;
-   flex-wrap: nowrap;
- }
-
- .card {
-   box-shadow: 0px 0px 20px -5px ;
-   width : 22vmin;
-   height : 22vmin;
-   background-color : rgb(45, 190, 205);
-   border : solid 2px rgb(80, 50, 145);
-   margin : 5px;
-   justify-content: center;
-   border-radius : 20px;
- }
-
- .card.active {
-   border : solid 2px rgb(45, 190, 205);
-   background-color : rgb(80, 50, 145);
- }
-
- .card:hover {
-   border : solid 2px rgb(45, 190, 205);
-   background-color : rgb(80, 50, 145);
-   transition: background-color 500ms linear;
- }
-
 </style>
