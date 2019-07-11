@@ -70,25 +70,27 @@ const axios = require('axios');
      next(vm => {
 
        if (to.params.user !== undefined){
+         console.log(to.params.user)
          axios.put('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/activeuser', {"username":to.params.user})
-         axios.get('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/profiles/name', {'name' : to.params.user})
-              .then(response => {
-                /* console.log(response.data) */
-                /* this.percent = response.data.wert
-                 * this.custom = response.data.custom */
-                vm.percent = 85;
-                vm.custom = true;
-                vm.user = to.params.user
-                vm.slide()
-                vm.cloud()
-              });
+         axios.get("https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/profiles/" + to.params.user)
+                .then(response => {
+                  console.log(response.data)
+                  /* this.percent = response.data.wert
+                   * this.custom = response.data.custom */
+                  vm.percent = 85;
+                  vm.custom = true;
+                  vm.user = to.params.user
+                  vm.slide()
+                  vm.cloud()
+                });
        }
        else{
          axios.get('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/activeuser')
               .then(response => {
                 vm.user = response.data;
-                axios.get('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/profiles/name', {'name' : vm.user})
+                axios.get("https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/profiles/" + to.params.user)
                      .then(response => {
+                       console.log(response.data)
                        /* this.percent = response.data.wert
                         * this.custom = response.data.custom */
                        vm.percent = 85;
@@ -104,10 +106,11 @@ const axios = require('axios');
    beforeRouteUpdate (to, from, next) {
 
      if (to.params.user !== undefined){
+       /* console.log(to.params.user) */
        axios.put('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/activeuser', {"username":to.params.user})
-       axios.get('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/profiles/name', {'name' : to.params.user})
+       axios.get("https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/profiles/" + to.params.user)
             .then(response => {
-              /* console.log(response.data)  */
+              console.log(response.data) 
               /* this.percent = response.data.wert
                * this.custom = response.data.custom */
               this.percent = 85;
@@ -115,14 +118,15 @@ const axios = require('axios');
               this.user = to.params.user
               this.slide()
               this.cloud()
-            });
+       });
      }else{
 
        axios.get('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/activeuser')
             .then(response => {
               this.user = response.data;
-              axios.get('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/profiles/name', {'name' : this.user})
+              axios.get("https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/profiles/" + to.params.user)
                    .then(response => {
+                     console.log(response.data)
                      /* this.percent = response.data.wert
                       * this.custom = response.data.custom */
                      this.percent = 85;
@@ -143,12 +147,15 @@ const axios = require('axios');
 
      cloud() {
        let data = {
-         name: this.user,
-         wert: this.percent,
-         custom: this.demo ? "True" : "False"
+         "name": this.user,
+         "wert" : parseInt(this.percent),
+         "custom" : this.demo ? "True" : "False"
        }
-       console.log(data)
+       /* console.log(data) */
        axios.put('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx//profiles/name', data)
+              .then(res => {
+                /* console.log(res) */
+              })
      },
 
      slide (){
