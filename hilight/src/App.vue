@@ -65,25 +65,27 @@ require('material-design-lite')
 export default {
 	 
    name: 'app',
-   data (){
+
+   data : function(){
      return {
        users : []
      }
    },
 	 
-   mounted (){
-     axios.get('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/profiles')
-          .then(response => (this.users = response.data));
+   mounted : function (){		 
+		 axios.get('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/profiles')
+					.then(response => (this.users = response.data));			 
    },
 	 
    methods: {
-     hideMenu: function () {
+     hideMenu : function () {
        document.getElementsByClassName('mdl-layout__drawer')[0].classList.remove('is-visible')
        document.getElementsByClassName('mdl-layout__obfuscator')[0].classList.remove('is-visible')
      }
    }
-   
-}
+	 
+ }
+ 
 </script>
 
 <style scoped>
@@ -126,7 +128,6 @@ export default {
    color: #C747A7;
  }
 
-
  footer {
    margin: 0;
    height: 5px;
@@ -134,8 +135,6 @@ export default {
    background-color: #503292;
    color: #C747A7;
  }
-
-
 
  header span {
    display: block;
@@ -155,7 +154,6 @@ export default {
    justify-content: space-evenly;
    flex-wrap: nowrap;
  }
-
 
  .card {
    box-shadow: 0px 0px 20px -5px ;

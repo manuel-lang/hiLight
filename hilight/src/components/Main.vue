@@ -43,7 +43,7 @@ const axios = require('axios');
 
    name: 'hello',
 
-   data () {
+   data : function() {
      return {
        info : 'This is info',
        percent : 45,
@@ -68,84 +68,27 @@ const axios = require('axios');
 
    beforeRouteEnter (to, from, next) {
      next(vm => {
-
-       if (to.params.user !== undefined){
-         console.log(to.params.user)
-         axios.put('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/activeuser', {"username":to.params.user})
-         axios.get("https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/profiles/" + to.params.user)
-                .then(response => {
-                  console.log(response.data)
-                  /* this.percent = response.data.wert
-                   * this.custom = response.data.custom */
-                  vm.percent = 85;
-                  vm.custom = true;
-                  vm.user = to.params.user
-                  vm.slide()
-                  vm.cloud()
-                });
-       }
+			 if (to.params.user !== undefined){
+				 vm.setUser(to.params.user);
+			 }
        else{
-         axios.get('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/activeuser')
-              .then(response => {
-                vm.user = response.data;
-                axios.get("https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/profiles/" + to.params.user)
-                     .then(response => {
-                       console.log(response.data)
-                       /* this.percent = response.data.wert
-                        * this.custom = response.data.custom */
-                       vm.percent = 85;
-                       vm.custom = true;
-                       vm.slide()
-                       vm.cloud()
-                     });
-              });
+         vm.pollUser()
        }
      })
    },
 
    beforeRouteUpdate (to, from, next) {
-
-     if (to.params.user !== undefined){
-       /* console.log(to.params.user) */
-       axios.put('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/activeuser', {"username":to.params.user})
-       axios.get("https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/profiles/" + to.params.user)
-            .then(response => {
-              console.log(response.data) 
-              /* this.percent = response.data.wert
-               * this.custom = response.data.custom */
-              this.percent = 85;
-              this.custom = true;
-              this.user = to.params.user
-              this.slide()
-              this.cloud()
-       });
-     }else{
-
-       axios.get('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/activeuser')
-            .then(response => {
-              this.user = response.data;
-              axios.get("https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/profiles/" + to.params.user)
-                   .then(response => {
-                     console.log(response.data)
-                     /* this.percent = response.data.wert
-                      * this.custom = response.data.custom */
-                     this.percent = 85;
-                     this.custom = true;
-                     this.slide()
-                     this.cloud()
-                   });
-            });
-
+		 if (to.params.user !== undefined){
+			 this.setUser(to.params.user)       
+		 }else{
+			 this.pollUser()
      }
-     
-     
-     next();
-
+		 next();
    },
 
    methods : {
 
-     cloud() {
+     cloud : function () {
        let data = {
          "name": this.user,
          "wert" : parseInt(this.percent),
@@ -158,7 +101,7 @@ const axios = require('axios');
               })
      },
 
-     slide (){
+     slide : function (){
        let r = (this.upper - this.down)* (this.percent/100.0) + this.down;
        var canvas = this.$refs['gameCanvas'];
        this.repaint(canvas, r);
@@ -194,12 +137,52 @@ const axios = require('axios');
          x: evt.clientX - rect.left,
          y: evt.clientY - rect.top
        };
-     }
+     },
+
+		 pollUser : function(){
+			 axios.get('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/activeuser')
+            .then(response => {
+              this.user = response.data;
+              axios.get("https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/profiles/" + to.params.user)
+                   .then(response => {
+                     console.log(response.data)
+                     this.percent = response.data.wert
+										 this.custom = response.data.custom
+                     this.slide()
+                     this.cloud()
+                   });
+            });
+		 },
+
+		 setUser : function(user) {
+			 axios.put('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/activeuser', {"username":user})
+       axios.get("https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/profiles/" + user)
+            .then(response => {
+              console.log(response.data) 
+              this.percent = response.data.wert
+							this.custom = response.data.custom
+              this.user = to.params.user
+              this.slide()
+              this.cloud()
+						});
+		 },
+
+		 poll : function (){
+			 pollUser()
+		 }
+		 
 
    },
 
    mounted () {
-
+		 
+		 /* 
+      *      this.$nextTick(function () {
+      *        window.setInterval(() => {
+      *          this.poll();
+      *        },1000);
+      *      }) */
+		 
    }
  }
 </script>

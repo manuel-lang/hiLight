@@ -53,16 +53,15 @@
     </div>
     
     <div class = "cards">
-
-      <div ref="1:1" class="card" @click="window_update(1,1)"></div>
-      <div ref="1:2" class="card" @click="window_update(1,2)"></div>
-      <div ref="1:3" class="card" @click="window_update(1,3)"></div>
+      <div v-bind:class="{ active: windows[0][0] == 1] }" ref="1:1" class="card" @click="window_update(0,0)"></div>
+      <div v-bind:class="{ active: windows[0][1] == 1] }" ref="1:2" class="card" @click="window_update(0,1)"></div>
+      <div v-bind:class="{ active: windows[0][2] == 1] }" ref="1:3" class="card" @click="window_update(0,2)"></div>
     </div>
 
     <div class = "cards">
-      <div ref="2:1" class="card" @click="window_update(2,1)"></div>                       
-      <div ref="2:2" class="card" @click="window_update(2,2)"></div>
-      <div ref="2:3" class="card" @click="window_update(2,3)"></div>
+      <div v-bind:class="{ active: windows[1][0] == 1] }" ref="2:1" class="card" @click="window_update(1,0)"></div>                       
+      <div v-bind:class="{ active: windows[1][1] == 1] }" ref="2:2" class="card" @click="window_update(1,1)"></div>
+      <div v-bind:class="{ active: windows[1][2] == 1] }" ref="2:3" class="card" @click="window_update(1,2)"></div>
     </div>
     
   </section>
@@ -79,7 +78,10 @@
    data () {
      return {
        paint : false,
-       detection : false
+       detection : false,
+			 windows : [
+				 [0,0,0],
+				 [0,0,0]]
      }
    },
 
@@ -156,7 +158,16 @@
 		 },
 		 
      window_update(x,y) {
-       
+
+			 this.windows[x][y] = (this.windows[x][y] + 1) % 2
+			 
+			 if (this.windows[x][y] == 1){
+				 
+			 }else{
+				 
+			 }
+			 
+			 
      },
 
      update_det (){
