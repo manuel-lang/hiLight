@@ -60,9 +60,9 @@
     </div>
 
     <div class = "cards">
-      <div ref="2:1" class="card"></div>                       
-      <div ref="2:2" class="card"></div>
-      <div ref="2:3" class="card"></div>
+      <div ref="2:1" class="card" @click="window_update(2,1)"></div>                       
+      <div ref="2:2" class="card" @click="window_update(2,2)"></div>
+      <div ref="2:3" class="card" @click="window_update(2,3)"></div>
     </div>
     
   </section>
@@ -144,6 +144,10 @@
    },
 
    methods : {
+
+     window_update(x,y) {
+       
+     },
 
      update_det (){
 
