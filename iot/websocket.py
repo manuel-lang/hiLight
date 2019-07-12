@@ -13,12 +13,11 @@ def make_socket_string(message):
             strings.append('{"datalen":1,"srcraw":0,"src":"local","datahex":"%s","sender":"se","type":"groupwrite","time":1562939923,"dstraw":2310,"dst":"1\/1\/%d"}'%(hex_value, i+1))
     else:
         for idx, pos_value in enumerate(message):
-            hex_value = "FF" if pos_value else "00"
-            strings.append('{"datalen":1,"srcraw":0,"src":"local","datahex":"%s","sender":"se","type":"groupwrite","time":1562939923,"dstraw":2310,"dst":"1\/1\/%d"}'%(hex_value, idx+idx+1))
-            strings.append('{"datalen":1,"srcraw":0,"src":"local","datahex":"%s","sender":"se","type":"groupwrite","time":1562939923,"dstraw":2310,"dst":"1\/1\/%d"}'%(hex_value, idx+idx+2))
+            hex_value = "FF" if pos_value>2 else "00"
+            strings.append('{"datalen":1,"srcraw":0,"src":"local","datahex":"%s","sender":"se","type":"groupwrite","time":1562939923,"dstraw":2310,"dst":"1\/1\/%d"}'%(hex_value, (2*idx)+1))
+            strings.append('{"datalen":1,"srcraw":0,"src":"local","datahex":"%s","sender":"se","type":"groupwrite","time":1562939923,"dstraw":2310,"dst":"1\/1\/%d"}'%(hex_value, (2*idx)+2))
 
-    for string in strings:
-        print(string)
+    return strings
         
 print("-"*30)
 make_socket_string(cam)
