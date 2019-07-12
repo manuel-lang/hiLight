@@ -8,9 +8,9 @@ USE_SENSORS = False
 
 cert_path = "certificates"
 HOST_NAME = "a2k3i43s7frss9-ats.iot.eu-central-1.amazonaws.com"
-ROOT_CA = f"{cert_path}/AmazonRootCA1.pem"
-PRIVATE_KEY = f"{cert_path}/private.pem.key"
-CERT_FILE = f"{cert_path}/certificate.pem.crt"
+ROOT_CA = "{}/AmazonRootCA1.pem".format(cert_path)
+PRIVATE_KEY = "{}/private.pem.key".format(cert_path)
+CERT_FILE = "{}/certificate.pem.crt".format(cert_path)
 
 
 def windowCallback(client, userdata, message):
