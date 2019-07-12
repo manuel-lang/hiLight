@@ -3,7 +3,7 @@ import time
 import threading
 
 import demo_logic
-import serial
+#import serial
 
 cert_path = "certificates"
 
@@ -45,12 +45,15 @@ myAWSIoTMQTTClient.subscribe("windows", 0, windowCallback)
 detection_thread = threading.Thread(target=demo_logic.start, args=(myAWSIoTMQTTClient,))
 detection_thread.start()
 
+while True:
+    time.sleep(1)
+    print("  --- Sensor thread")
+    continue
+
+"""
 with serial.Serial('/dev/ttyACM0', 9600) as ser:
     while True:
-        time.sleep(1)
-        print("  --- Sensor thread")
-        continue
-        
+        # read sensor data
         line = ser.readline()
         brightness = int(line.decode("utf-8").replace("\r\n", ""))
         print("    Sensor read: %s" % brightness)
@@ -60,7 +63,7 @@ with serial.Serial('/dev/ttyACM0', 9600) as ser:
             print(" <- sensor_data: %s" % message)
         else:
             print("!!!  Error sending sensor data to AWS IoT...")
-            
+"""         
 
 myAWSIoTMQTTClient.disconnect()
 

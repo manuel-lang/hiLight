@@ -45,40 +45,39 @@ def detect(cascades, test_image, scaleFactor = 1.2):
     print(output)
     return output, image_copy
 
-def start(myAWSIoTMQTTClient):
-    cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(0)
 
-    #classifiers
-    haar_cascade_face = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
-    #haar_cascade_upperbody = cv2.CascadeClassifier('D:/Anaconda3/envs/py36/Library/etc/haarcascades/haarcascade_frontalface_alt.xml')
-    #haar_cascade_fullbody = cv2.CascadeClassifier('D:/Anaconda3/envs/py36/Library/etc/haarcascades/haarcascade_profileface.xml')
+#classifiers
+haar_cascade_face = cv2.CascadeClassifier('D:/Anaconda3/envs/py36/Library/etc/haarcascades/haarcascade_frontalface_default.xml')
+#haar_cascade_upperbody = cv2.CascadeClassifier('D:/Anaconda3/envs/py36/Library/etc/haarcascades/haarcascade_frontalface_alt.xml')
+#haar_cascade_fullbody = cv2.CascadeClassifier('D:/Anaconda3/envs/py36/Library/etc/haarcascades/haarcascade_profileface.xml')
 
-    cascades = [haar_cascade_face]   #, haar_cascade_upperbody,haar_cascade_fullbody]
+cascades = [haar_cascade_face]   #, haar_cascade_upperbody,haar_cascade_fullbody]
 
-    i = 0
-    buffer = []
-    while(True):
-        time.sleep(0.4)
-        i += 1
-        if i%5 == 0:
-            result = [0,0,0]
-            for cl in buffer:
-               result = [sum(x) for x in zip(result, cl)]
-            buffer = []
-            print("--------",result)
-        
-        # time.sleep(0.5)
-        # Capture frame-by-frame
-        ret, frame = cap.read()
+i = 0
+buffer = []
+while(True):
+    time.sleep(0.4)
+    i += 1
+    if i%5 == 0:
+        result = [0,0,0]
+        for cl in buffer:
+           result = [sum(x) for x in zip(result, cl)]
+        buffer = []
+        print("--------",result)
+    
+    # time.sleep(0.5)
+    # Capture frame-by-frame
+    ret, frame = cap.read()
 
-        output, face_img = detect(cascades,  cv2.flip( frame, 1 ))
-        buffer.append(output)
-        
-        # Display the resulting frame
-        #cv2.imshow('frame',face_img)
-        #if cv2.waitKey(1) & 0xFF == ord('q'):
-        #    break
+    output, face_img = detect(cascades,  cv2.flip( frame, 1 ))
+    buffer.append(output)
+    
+    # Display the resulting frame
+    #cv2.imshow('frame',face_img)
+    #if cv2.waitKey(1) & 0xFF == ord('q'):
+    #    break
 
-    # When everything done, release the capture
-    cap.release()
-    cv2.destroyAllWindows()
+# When everything done, release the capture
+cap.release()
+cv2.destroyAllWindows()
