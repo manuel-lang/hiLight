@@ -1,1 +1,3 @@
 AWSIoTPythonSDK
+numpy
+opencv-python

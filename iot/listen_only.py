@@ -1,5 +1,9 @@
 import AWSIoTPythonSDK.MQTTLib as AWSIoTPyMQTT
 import time
+import threading
+
+import demo_logic
+import serial
 
 cert_path = "certificates"
 
@@ -37,8 +41,26 @@ print("Connection successful!")
 
 myAWSIoTMQTTClient.subscribe("windows", 0, windowCallback)
 
-while True:
-    time.sleep(10)
+# start face detection
+detection_thread = threading.Thread(target=demo_logic.start, args=(myAWSIoTMQTTClient,))
+detection_thread.start()
+
+with serial.Serial('/dev/ttyACM0', 9600) as ser:
+    while True:
+        time.sleep(1)
+        print("  --- Sensor thread")
+        continue
+        
+        line = ser.readline()
+        brightness = int(line.decode("utf-8").replace("\r\n", ""))
+        print("    Sensor read: %s" % brightness)
+        message = '{"temperature": "0", "brightness": %d}' % brightness
+        
+        if myAWSIoTMQTTClient.publish("sensor_data", message, 0):
+            print(" <- sensor_data: %s" % message)
+        else:
+            print("!!!  Error sending sensor data to AWS IoT...")
+            
 
 myAWSIoTMQTTClient.disconnect()
 
