@@ -4,7 +4,7 @@ import threading
 
 import demo_person as demo_logic
 
-USE_SENSORS = False
+USE_SENSORS = 1
 
 cert_path = "certificates"
 HOST_NAME = "a2k3i43s7frss9-ats.iot.eu-central-1.amazonaws.com"
@@ -20,9 +20,11 @@ def send_sensor_data(brightness, temeperature=None):
     message = '{"temperature": "0", "brightness": %d}' % brightness
     
     if myAWSIoTMQTTClient.publish("sensor_data", message, 0):
-        print(" <- sensor_data: %s" % message)
+        #print(" <- sensor_data: %s" % message)
+        pass
     else:
-        print("!!!  Error sensor -> AWS IoT")
+        #print("!!!  Error sensor -> AWS IoT")
+        pass
 
 # Connect to AWS
 myAWSIoTMQTTClient = AWSIoTPyMQTT.AWSIoTMQTTClient("RaspberryPi")
@@ -44,7 +46,7 @@ detection_thread.start()
 # set up serial interface to arduino
 if USE_SENSORS:
     import read_sensor
-    sensors = Sensor(myAWSIoTMQTTClient) if USE_SENSORS else None
+    sensors = read_sensor.Sensors(myAWSIoTMQTTClient) if USE_SENSORS else None
 
 # main loop
 try:

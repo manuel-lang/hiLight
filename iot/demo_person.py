@@ -28,7 +28,8 @@ def detect(cascades, test_image, scaleFactor = 1.2):
 
 
 def start(myAWSIoTMQTTClient, run_event):
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(0)    
+    #cap.set(cv2.CAP_PROP_FOURCC, cv2.cv.CV_FOURCC('M', 'J', 'P', 'G'))
 
     #define classifiers 
     haar_cascade_face = cv2.CascadeClassifier('../haarcascades/haarcascade_frontalface_default.xml')
@@ -47,10 +48,9 @@ def start(myAWSIoTMQTTClient, run_event):
             break
     
         #time between frame capture
-        time.sleep(0.4)
         i += 1
         #calculate a result every 5 frames
-        if i%5 == 0:
+        if i%3 == 0:
             result = [0] * SLICES
             for single_frame_result in buffer:
                result = [sum(x) for x in zip(result, single_frame_result)]
@@ -58,21 +58,28 @@ def start(myAWSIoTMQTTClient, run_event):
             
             
             #return (print, post) result
-            list_string = f"{result}"
+            list_string = "{}".format(result)
             message = '{"sides": %s}' % list_string 
             if myAWSIoTMQTTClient.publish("camera", message, 0):
-                print(" <- camera: %s" % message)
+                #print(" <- camera: %s" % message)
+                pass
             else:
-                print("!!!  Error camera -> AWS IoT")
+                #print("!!!  Error camera -> AWS IoT")
+                pass
             #print(result)
 
 
         # Capture frame-by-frame
         ret, frame = cap.read()
+        
         #get frame information and append it to buffer
         output = detect(cascades,  cv2.flip( frame, 1 ))
         buffer.append(output)
+        #cv2.imshow('frame', frame)
+        #cv2.waitKey(1)
+            
     # When everything done, release the capture
     cap.release()
+    
     cv2.destroyAllWindows()
         
