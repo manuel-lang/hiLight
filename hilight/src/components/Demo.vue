@@ -68,78 +68,79 @@
 </template>
 
 
+
 <script>
 
  const axios = require('axios');
  
  export default {
+     
+     name: 'demo',
+     
+     data () {
+         return {
+             paint : false,
+             detection : false,
+             windows : [
+                 [0,0,0],
+                 [0,0,0]]
+         }
+     },
    
-   name: 'demo',
-   
-   data () {
-     return {
-       paint : false,
-       detection : false,
-       windows : [
-         [1,0,0],
-         [0,0,0]]
-     }
-   },
-   
-   watch : {
-     paint: function() {
-       this.cloud()
+     watch : {
+         paint: function() {
+             this.cloud()
+         },
+         
+         detection: function() {
+             this.cloud()
+         }         
      },
      
-     detection: function() {
-       this.cloud()
-     }         
-   },
-   
-   beforeRouteEnter (to, from, next) {
-     next(vm => {
+     beforeRouteEnter (to, from, next) {
+         next(vm => {
+             axios.get('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/operationmode')
+                 .then(vm.load);
+         })
+     },
+     
+     beforeRouteUpdate (to, from, next) {
+         axios.get('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/operationmode')
+             .then(this.load);
+         
+         next();
+         
+     },
+     
+     mounted () {
+         
        axios.get('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/operationmode')
-            .then(vm.load);
-     })
-   },
-   
-   beforeRouteUpdate (to, from, next) {
-     axios.get('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/operationmode')
-          .then(this.load);
-     
-     next();
-     
-   },
-   
-   mounted () {
-     
-     axios.get('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/operationmode')
-          .then(this.load);		 
-     
-     /* 
-      *      this.$nextTick(function () {
-      *        window.setInterval(() => {
-      *          this.poll();
-      *        },1000);
-      *      }) */
-     
-   },
+            .then(this.load);		 
+         
+       /* 
+        *      this.$nextTick(function () {
+        *        window.setInterval(() => {
+        *          this.poll();
+        *        },1000);
+        *      }) */
+       
+     },
    
    methods : {
      
      load (res) {
        
        for (var index = 0; index < res.data.length; ++index) {
-
-         if (res.data[index].id == "paint")
-         {
-           this.paint = res.data[index].demo == "True"
-         }
+           
+           if (res.data[index].id == "paint")
+           {
+               this.paint = res.data[index].demo == "True"
+           }
          
-         if (res.data[index].id == "detection")
-         {
-           this.detection = res.data[index].demo == "True"
-         }
+           if (res.data[index].id == "detection")
+           {
+               this.detection = res.data[index].demo == "True"
+           }
        }
      },
      
@@ -149,8 +150,8 @@
        
        axios.put('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/operationmode',
                  {
-                   'detection' : detection,
-                   'paint':paint
+                     'detection' : detection,
+                     'paint':paint
                  }
        );
        

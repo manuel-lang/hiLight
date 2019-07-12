@@ -2,8 +2,9 @@
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
   
   <header class="mdl-layout__header ">
-    <div class="mdl-layout__header-row  mdl-layout--fixed-header mdl-layout">
-      <span class="mdl-layout-title">HiLight</span>
+    <div class="mdl-layout__header-row">
+      <span class="mdl-layout-title">Hi
+        Light</span>
     </div>
   </header>
   
@@ -11,7 +12,7 @@
     <span class="mdl-layout-title">HiLight</span>
     <nav class="mdl-navigation">
 
-			<li class="mdl-list__item">
+      <li class="mdl-list__item">
         <router-link class="mdl-navigation__link" to="/main" @click.native="hideMenu">
           <span class="mdl-list__item-primary-content">
             <i class="material-icons mdl-list__item-icon">home</i>
