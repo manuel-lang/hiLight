@@ -2,69 +2,63 @@ import AWSIoTPythonSDK.MQTTLib as AWSIoTPyMQTT
 import time
 import threading
 
-import demo_logic
-#import serial
+import demo_person as demo_logic
+
+USE_SENSORS = False
 
 cert_path = "certificates"
-
-# The unique hostname that AWS IoT generated for 
-# this device.
 HOST_NAME = "a2k3i43s7frss9-ats.iot.eu-central-1.amazonaws.com"
-
-# The relative path to the correct root CA file for AWS IoT, 
-# that you have already saved onto this device.
 ROOT_CA = f"{cert_path}/AmazonRootCA1.pem"
-
-# The relative path to your private key file that 
-# AWS IoT generated for this device, that you 
-# have already saved onto this device.
 PRIVATE_KEY = f"{cert_path}/private.pem.key"
-
-# The relative path to your certificate file that 
-# AWS IoT generated for this device, that you 
-# have already saved onto this device.
 CERT_FILE = f"{cert_path}/certificate.pem.crt"
 
 
 def windowCallback(client, userdata, message):
     print(" -> 'window': ", message.payload)
+    
+def send_sensor_data(brightness, temeperature=None):
+    message = '{"temperature": "0", "brightness": %d}' % brightness
+    
+    if myAWSIoTMQTTClient.publish("sensor_data", message, 0):
+        print(" <- sensor_data: %s" % message)
+    else:
+        print("!!!  Error sensor -> AWS IoT")
 
-# Create, configure, and connect a shadow client.
-myAWSIoTMQTTClient = AWSIoTPyMQTT.AWSIoTMQTTClient("LaptopTest")
+# Connect to AWS
+myAWSIoTMQTTClient = AWSIoTPyMQTT.AWSIoTMQTTClient("RaspberryPi")
 myAWSIoTMQTTClient.configureEndpoint(HOST_NAME, 8883)
 myAWSIoTMQTTClient.configureCredentials(ROOT_CA, PRIVATE_KEY, CERT_FILE)
 myAWSIoTMQTTClient.configureConnectDisconnectTimeout(10)
 myAWSIoTMQTTClient.configureMQTTOperationTimeout(5)
 myAWSIoTMQTTClient.connect()
-
 print("Connection successful!")
 
+# subscribe windows topic callback
 myAWSIoTMQTTClient.subscribe("windows", 0, windowCallback)
 
 # start face detection
-detection_thread = threading.Thread(target=demo_logic.start, args=(myAWSIoTMQTTClient,))
+interrupt_event = threading.Event()
+detection_thread = threading.Thread(target=demo_logic.start, args=(myAWSIoTMQTTClient,interrupt_event))
 detection_thread.start()
 
-while True:
-    time.sleep(1)
-    print("  --- Sensor thread")
-    continue
+# set up serial interface to arduino
+if USE_SENSORS:
+    import read_sensor
+    sensors = Sensor(myAWSIoTMQTTClient) if USE_SENSORS else None
 
-"""
-with serial.Serial('/dev/ttyACM0', 9600) as ser:
+# main loop
+try:
     while True:
-        # read sensor data
-        line = ser.readline()
-        brightness = int(line.decode("utf-8").replace("\r\n", ""))
-        print("    Sensor read: %s" % brightness)
-        message = '{"temperature": "0", "brightness": %d}' % brightness
+        brightness = sensors.read_sensor_data() if USE_SENSORS else 4
+        send_sensor_data(brightness)
+        time.sleep(1)
         
-        if myAWSIoTMQTTClient.publish("sensor_data", message, 0):
-            print(" <- sensor_data: %s" % message)
-        else:
-            print("!!!  Error sending sensor data to AWS IoT...")
-"""         
-
-myAWSIoTMQTTClient.disconnect()
-
+except Exception as e:
+    print(e)
+except KeyboardInterrupt:
+    pass
+finally:
+    interrupt_event.set()  # interrupt face detection
+    sensors.close()  # close serial interface
+    exit(0)
 
