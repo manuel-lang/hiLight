@@ -14,3 +14,4 @@ base url: https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx
 |  | PUT | Set the current operation mode (demo or custom) | {"paint": "True", "detection": "True"} |
 | /activeuser | GET | Get the currently active user's name | - |
 |  | PUT | Set the currently active user's name | {"username":"Adam"} |
+| /winstate | GET | Get all current window values | - |
