@@ -141,12 +141,12 @@
          "custom" : cust
        }
        
-       /* console.log(data) */
-
-       /* axios.put('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx//profiles/name', data)
-        *      .then(res => {
-        *      }) */
-
+       console.log(data)
+       
+       axios.put('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx//profiles/name', data)
+              .then(res => {
+              })
+       
        
      },
 

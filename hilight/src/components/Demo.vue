@@ -114,44 +114,45 @@
      return {
        paint : false,
        detection : false,
+       loaded : false,
        windows : [
          [0,0,0],
          [0,0,0]]
      }
-     },
+     
+   },
    
    watch : {
      paint: function() {
-       this.cloud()
+       if (this.loaded) this.cloud()
      },
      
      detection: function() {
-       this.cloud()
+       if (this.loaded) this.cloud()
      }         
      },
    
    beforeRouteEnter (to, from, next) {
      next(vm => {
-       axios.get('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/operationmode')
-            .then(vm.load);
+
+       /* axios.get('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/operationmode')
+        *      .then(vm.load); */
+
      })
-     },
+   },
    
    beforeRouteUpdate (to, from, next) {
-     axios.get('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/operationmode')
-             .then(this.load);
+     /* axios.get('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/operationmode')
+      *         .then(this.load); */
          
-         next();
+     next();
          
      },
      
    mounted () {
          
      axios.get('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/operationmode')
-          .then(this.load);
-
-
-     this.poll();
+          .then(this.load)
 
      /* this.$nextTick(function () {
       *   window.setInterval(() => {
@@ -163,6 +164,7 @@
    methods : {
      
      load (res) {
+       this.loaded = false
        
        for (var index = 0; index < res.data.length; ++index) {
          
@@ -176,20 +178,26 @@
            this.detection = res.data[index].demo == "True"
          }
        }
-       
+
        this.update_paint()
        this.update_det()
-       this.sendWindowsState()
+       axios.get('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/winstate')
+           .then(this.updateWindows)
+       
+       /* this.sendWindowsState() */
      },
      
      cloud(){
        let paint = this.paint ? "True" : "False";
        let detection = this.detection ? "True" : "False";
-       
+       console.log({
+         'detection' : detection,
+         'paint':paint
+       })
        axios.put('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/operationmode',
                  {
-                     'detection' : detection,
-                     'paint':paint
+                   'detection' : detection,
+                   'paint':paint
                  }
        );
        
@@ -282,7 +290,7 @@
          this.$refs['1:1'].style.backgroundColor = ""
          this.$refs['0:2'].style.backgroundColor = ""
          this.$refs['1:2'].style.backgroundColor = ""
-
+         
          this.windows[0][0] = 0
          this.windows[0][1] = 0
          this.windows[0][2] = 0
@@ -290,8 +298,10 @@
          this.windows[1][1] = 0
          this.windows[1][2] = 0
          
-         this.$forceUpdate();         
-       }else{
+         this.$forceUpdate();
+         
+       } else {
+
          this.poll()
        }
        
@@ -299,28 +309,61 @@
 
      updateWindows(res){
 
-       var vals = {}
-       for(var i = 0; i < 6 ; i++)
+       if(this.paint)
        {
-         let winVal = res.data[i].winVal;
-         if (winVal > 100) winVal = 100;
-         if (winVal <= 0) winVal = 1;
          
-         let col = interpolateColor([80, 50, 145], [45, 190, 205], winVal/100);
-         vals[res.data[i].id] = 'rgb(' + col[0] + ',' + col[1] + ',' + col[2] + ')'
+         var vals = {}
+         for(var i = 0; i < 6 ; i++)
+         {
+           let winVal = res.data[i].winVal;
+           if (winVal > 100) winVal = 100;
+           if (winVal <= 0) winVal = 1;
+
+           vals[res.data[i].id] = winVal
+         }
+
+         this.windows[0][0] = vals['0'] == 100 ? 1 : 0
+         this.windows[1][0] = vals['1'] == 100 ? 1 : 0
+
+         this.windows[0][1] = vals['2'] == 100 ? 1 : 0
+         this.windows[1][1] = vals['3'] == 100 ? 1 : 0
+         
+         this.windows[0][2] = vals['4'] == 100 ? 1 : 0
+         this.windows[1][2] = vals['5'] == 100 ? 1 : 0
+
+
+         console.log(this.windows)
+         this.$forceUpdate();
+
+       } else {
+         var vals = {}
+         for(var i = 0; i < 6 ; i++)
+         {
+           let winVal = res.data[i].winVal;
+           if (winVal > 100) winVal = 100;
+           if (winVal <= 0) winVal = 1;
+           
+           let col = interpolateColor([80, 50, 145], [45, 190, 205], winVal/100);
+           vals[res.data[i].id] = 'rgb(' + col[0] + ',' + col[1] + ',' + col[2] + ')'
+         }
+
+         /* console.log(res.data)
+          * console.log(vals) */
+
+         this.$refs['0:0'].style.backgroundColor = vals['0']
+         this.$refs['1:0'].style.backgroundColor = vals['1']
+         
+         this.$refs['0:1'].style.backgroundColor = vals['2']
+         this.$refs['1:1'].style.backgroundColor = vals['3']
+
+         this.$refs['0:2'].style.backgroundColor = vals['4']
+         this.$refs['1:2'].style.backgroundColor = vals['5']
        }
+       this.loaded = true
 
-       /* console.log(res.data)
-        * console.log(vals) */
-
-       this.$refs['0:0'].style.backgroundColor = vals['0']
-       this.$refs['1:0'].style.backgroundColor = vals['1']
        
-       this.$refs['0:1'].style.backgroundColor = vals['2']
-       this.$refs['1:1'].style.backgroundColor = vals['3']
 
-       this.$refs['0:2'].style.backgroundColor = vals['4']
-       this.$refs['1:2'].style.backgroundColor = vals['5']
+       
        
      },
      
@@ -333,6 +376,7 @@
        
      }
    }
+   
  }
 </script>
 
@@ -350,8 +394,8 @@
    box-shadow: 0px 0px 20px -5px ;
    width : 22vmin;
    height : 22vmin;
-   background-color : rgb(45, 190, 205);
-   border : solid 2px rgb(80, 50, 145);
+   background-color : rgb(80, 50, 145);
+   border : solid 2px rgb(45, 190, 205);
    margin : 5px;
    justify-content: center;
    border-radius : 20px;
@@ -359,12 +403,9 @@
  }
 
  .card.active {
-   border : solid 2px rgb(45, 190, 205);
-   background-color : rgb(80, 50, 145);
+   background-color : rgb(45, 190, 205);
+   /* border : solid 2px rgb(80, 50, 145); */
    transition: background-color 500ms cubic-bezier(0.42, 0.0, 0.58, 1.0);
-   
-   /* filter : grayscale(100%) */
-   
  }
 
  .lower-wrapper{
