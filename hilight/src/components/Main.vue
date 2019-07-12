@@ -2,7 +2,7 @@
 
   <div class="wrapper">
     
-    <div class="container mdl-shadow--3dp">
+    <div class="container" style="margin-top: 10px;margin-bottom: 10px;">
       <h4>Hello {{user}}!</h4>
       <form class="toggle">
 
@@ -16,33 +16,26 @@
       </form>
     </div>
 
-    <hr/>
+    
 
-    <div v-dragged="onDragged"  class="butter-wrapper mdl-shadow--3dp"  @click="changeButter" @touchmove="prevent"> 
+    <div v-dragged="onDragged"  class="butter-wrapper"  @click="changeButter" @touchmove="prevent"> 
       <canvas ref="gameCanvas" id="gameCanvas" height="300" width="300"></canvas>
       <div class="img-hold"></div>
     </div>
-
-    <hr/>
-
-    <!-- Slider with Starting Value -->
-    <!-- <input v-model="percent" class="mdl-slider mdl-js-slider slider" type="range"
-         min="0" max="100" > -->
-
-    <vue-slider :dot-size=20
-                :enable-cross=false
-                :tooltip=false
-                v-model="percent" class="slider" @callback="updateSlider">
-    </vue-slider>
-
+    <!-- 
+         <vue-slider :dot-size=20
+         :enable-cross=false
+         :tooltip=false
+         v-model="percent" class="slider" @callback="updateSlider">
+         </vue-slider>
+    -->
 
     <hr/>
     <h4>Light: {{percent}}%</h4>
-
-  </div>
+    </div>
 
 </template>
-a
+
 
 <script>
  const axios = require('axios');
@@ -100,6 +93,16 @@ a
      next();
    },
 
+   mounted () {
+     
+     /* this.$nextTick(function () {
+      *   window.setInterval(() => {
+      *     this.poll();
+      *   },1000);
+      *   }) */
+     
+   },
+
    methods : {
 
      prevent : function (event){
@@ -107,7 +110,7 @@ a
        event.preventDefault()
        /* event.stopPropagation() */
      },
-
+     
      onDragged : function ({ el, deltaX, deltaY, offsetX, offsetY, clientX, clientY, first, last }) {
 
        if (first) {
@@ -129,13 +132,15 @@ a
      },
 
      cloud : function () {
+
        let cust = this.custom.toString().capitalize()
+
        let data = {
          "name": this.user,
          "wert" : parseInt(this.percent),
          "custom" : cust
        }
- 
+       
        /* console.log(data) */
 
        /* axios.put('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx//profiles/name', data)
@@ -173,11 +178,11 @@ a
 
        ctx.fillStyle = "rgb(45, 190, 205)";
        ctx.clearRect(0, 0, canvas.width, canvas.height);
-         ctx.beginPath();
-         ctx.arc(canvas.width/2,
-                 canvas.height+70,
-                 r+80, 0 , 2 * Math.PI);
-         ctx.fill();
+       ctx.beginPath();
+       ctx.arc(canvas.width/2,
+               canvas.height+70,
+               r+80, 0 , 2 * Math.PI);
+       ctx.fill();
      },
 
      getMousePos : function (canvas, evt) {
@@ -219,16 +224,6 @@ a
      }
      
 
-   },
-
-   mounted () {
-     
-     /* this.$nextTick(function () {
-      *   window.setInterval(() => {
-      *     this.poll();
-      *   },1000);
-      *   }) */
-     
    }
  }
 </script>
@@ -261,7 +256,6 @@ a
  }
 
  .img-hold{
-
    width : 330px;
    height: 300px;
    margin: auto;
@@ -277,7 +271,6 @@ a
  .container {
    perspective: 800px;
    width: 320px;
-   margin-top : 7px;
    margin-left : 20px;
    margin: auto;
    padding : 3px;
@@ -286,7 +279,7 @@ a
 
  .toggle {
    position: relative;
-   border: solid 6px #04da97;
+   border: solid 6px rgb(165, 205, 80);
    border-radius: 35px;
    transition: transform cubic-bezier(0, 0, 0.30, 2) .4s;
    transform-style: preserve-3d;
@@ -337,23 +330,24 @@ a
  }
 
  .toggle>#flap {
+   
    position: absolute;
    top: calc( 0px - 6px);
    left: 50%;
-   height: calc(100% + 5px * 2);
+   height: calc(100% + 4px * 2);
    width: calc(50% + 2px);
    display: flex;
    justify-content: center;
    align-items: center;
    font-size: 16px;
-   background-color: #04da97;
-   border-top-right-radius: #04da97;
-   border-bottom-right-radius: #04da97;
+   background-color: rgb(165, 205, 80);
    transform-style: preserve-3d;
    transform-origin: left;
    transition: transform cubic-bezier(0.4, 0, 0.2, 1) .5s;
-   border-radius: 55px;
+   border-top-right-radius: 55px;
+   border-bottom-right-radius: 55px;
    z-index: -100;
+   
  }
 
  .toggle>#flap>.content {
@@ -366,6 +360,7 @@ a
  .wrapper {
    margin: auto;
    top : 0px;
+   margin-bottom: 0px;
  }
 
 </style>
