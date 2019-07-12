@@ -15,19 +15,20 @@
         <div id="flap"><span class="content"></span></div>
       </form>
     </div>
+
     <hr/>
 
-    <div v-dragged.prevent="onDragged"  class="butter-wrapper mdl-shadow--3dp">
+    <div v-dragged="onDragged"  class="butter-wrapper mdl-shadow--3dp"  @click="changeButter" @touchmove="prevent"> 
       <canvas ref="gameCanvas" id="gameCanvas" height="300" width="300"></canvas>
       <div class="img-hold"></div>
     </div>
-
 
     <hr/>
 
     <!-- Slider with Starting Value -->
     <!-- <input v-model="percent" class="mdl-slider mdl-js-slider slider" type="range"
          min="0" max="100" > -->
+
     <vue-slider :dot-size=20
                 :enable-cross=false
                 :tooltip=false
@@ -41,6 +42,7 @@
   </div>
 
 </template>
+a
 
 <script>
  const axios = require('axios');
@@ -50,6 +52,7 @@
   }
  
  export default {
+
    name: 'hello',
 
    data : function() {
@@ -99,21 +102,30 @@
 
    methods : {
 
+     prevent : function (event){
+       /* console.log('something happened') */
+       event.preventDefault()
+       /* event.stopPropagation() */
+     },
+
      onDragged : function ({ el, deltaX, deltaY, offsetX, offsetY, clientX, clientY, first, last }) {
+
        if (first) {
          this.isDragging = true
          return
-      }
-      if (last) {
-        this.isDragging = false
-        return
-      }
+       }
+       if (last) {
+         this.isDragging = false
+         return
+       }
+
 
        var canvas = this.$refs['gameCanvas'];
        var rect = canvas.getBoundingClientRect();
        var x = clientX - rect.left;
        var y =clientY - rect.top;
        this.repaint(canvas, canvas.height - y)
+       this.cloud()
      },
 
      cloud : function () {
@@ -125,10 +137,12 @@
        }
  
        /* console.log(data) */
-       axios.put('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx//profiles/name', data)
-            .then(res => {
-              /* console.log(res) */
-            })
+
+       /* axios.put('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx//profiles/name', data)
+        *      .then(res => {
+        *      }) */
+
+       
      },
 
      updateSlider :function(e){
@@ -146,6 +160,7 @@
        var mousePos = this.getMousePos(canvas, event);
        var m_y = mousePos.y
        this.repaint(canvas, canvas.height-m_y);
+       this.cloud()
      },
 
      repaint : function (canvas, r){
@@ -200,21 +215,20 @@
      },
 
      poll : function (){
-       pollUser()
+       this.pollUser()
      }
      
 
    },
 
    mounted () {
-		 
-		 /* 
-      *      this.$nextTick(function () {
-      *        window.setInterval(() => {
-      *          this.poll();
-      *        },1000);
-      *      }) */
-		 
+     
+     /* this.$nextTick(function () {
+      *   window.setInterval(() => {
+      *     this.poll();
+      *   },1000);
+      *   }) */
+     
    }
  }
 </script>
