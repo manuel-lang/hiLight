@@ -37,8 +37,17 @@ print("Connection successful!")
 
 myAWSIoTMQTTClient.subscribe("windows", 0, windowCallback)
 
-while True:
-    time.sleep(10)
+with serial.Serial('/dev/ttyACM0', 9600) as ser:
+    while True:
+        line = ser.readline()
+        brightness = int(line.replace("\r\n", ""))
+        message = '{"temperature": "0", "brightness": %d}' % brightness
+        """
+        success = myAWSIoTMQTTClient.publish("sensor_data", message, 0)
+        if not success:
+            print("  Error sending sensor data to AWS IoT...")
+        """
+        print(message)
 
 myAWSIoTMQTTClient.disconnect()
 
