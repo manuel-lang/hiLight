@@ -1,6 +1,8 @@
 import AWSIoTPythonSDK.MQTTLib as AWSIoTPyMQTT
+import os
 import time
 import threading
+import json
 
 import demo_person as demo_logic
 
@@ -12,9 +14,27 @@ ROOT_CA = "{}/AmazonRootCA1.pem".format(cert_path)
 PRIVATE_KEY = "{}/private.pem.key".format(cert_path)
 CERT_FILE = "{}/certificate.pem.crt".format(cert_path)
 
+window_mapping = {
+    "0": 0,
+    "1": 7,
+    "2": 5,
+    "3": 10,  # TODO
+    "4": 7,
+    "5": 10  # TODO
+}
 
 def windowCallback(client, userdata, message):
-    print(" -> 'window': ", message.payload)
+    #print(" -> 'window': {}".format(message.payload))
+    windows = json.loads(message.payload.decode('utf-8'))
+    
+    for window in windows:
+        window_id = window_mapping[window]
+        reversed = 100 - windows[window]
+        color = hex(int(reversed*2.5))[2:]
+        
+        command = 'knxtool groupwrite ip: 1/1/{} {}'.format(window_id, color)
+        os.system(command)
+        #print(" ----> WINDOW: {}".format(command))
     
 def send_sensor_data(brightness, temeperature=None):
     message = '{"temperature": "0", "brightness": %d}' % brightness
