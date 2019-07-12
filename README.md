@@ -15,5 +15,5 @@ base url: https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx
 | /activeuser | GET | Get the currently active user's name | - |
 |  | PUT | Set the currently active user's name | {"username":"Adam"} |
 | /winstate | GET | Get all current window values | - |
-|  | PUT | Set the window values | {"0":100,"1":100, ..., "5":100 } |
+|  | PUT | Set the window values | [{"0":100},{"1":100}, ..., {"5":100 }] |
 
