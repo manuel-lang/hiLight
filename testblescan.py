@@ -9,7 +9,7 @@ import json
 
 import bluetooth._bluetooth as bluez
 
-API_ENDPOINT = "https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/activeuser"
+API_ENDPOINT = "https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/activeuser"
 
 ids = {
     "fda50693a4e24fb1afcfc6eb07647825": "Alan",
@@ -31,13 +31,12 @@ blescan.hci_enable_le_scan(sock)
 while True:
 	returnedList = blescan.parse_events(sock, 10)
 	for beacon in returnedList:
-        split = returnedList.split(",")
-        beacon_id = split[1]
-        if beacon_id in ids and abs(int(split[-1])) < 40:
-            active_user = ids[beacon_id]
-            data = {"username": active_user}
-            
-            print("Sending")
-            response = requests.post(url = API_ENDPOINT, data = data)
-            print(response)
+            split = beacon.split(",")
+            beacon_id = split[1]
+            if beacon_id in ids and abs(int(split[-1])) < 40:
+                active_user = ids[beacon_id]
+                data = {"username": active_user}
+		print(data)
+                response = requests.put(url = API_ENDPOINT, data = json.dumps(data))
+                print(response)
 
