@@ -15,17 +15,18 @@ PRIVATE_KEY = "{}/private.pem.key".format(cert_path)
 CERT_FILE = "{}/certificate.pem.crt".format(cert_path)
 
 window_mapping = {
-    "0": 0,
+    "0": 4,
     "1": 7,
     "2": 5,
-    "3": 10,  # TODO
-    "4": 7,
-    "5": 10  # TODO
+    "3": 8,
+    "4": 6,
+    "5": 9
 }
 
 def windowCallback(client, userdata, message):
     #print(" -> 'window': {}".format(message.payload))
     windows = json.loads(message.payload.decode('utf-8'))
+    print(windows)
     
     for window in windows:
         window_id = window_mapping[window]
@@ -54,6 +55,11 @@ myAWSIoTMQTTClient.configureConnectDisconnectTimeout(10)
 myAWSIoTMQTTClient.configureMQTTOperationTimeout(5)
 myAWSIoTMQTTClient.connect()
 print("Connection successful!")
+
+print("Clearing windows...")
+for i in range(4, 8):
+    os.system('knxtool groupwrite ip: 1/1/{} 00'.format(i))
+    
 
 # subscribe windows topic callback
 myAWSIoTMQTTClient.subscribe("windows", 0, windowCallback)
