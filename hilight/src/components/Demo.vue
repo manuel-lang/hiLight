@@ -4,7 +4,6 @@
     <div class="mdl-shadow--3dp lower-wrapper">
 
       <div class = "mdl-grid ">
-
         <div class = "mdl-cell mdl-cell--2-col">
           <h4 class="mdl-switch__label">Detection Mode:</h4>
         </div>
@@ -18,7 +17,6 @@
             :labels="true"
             @change="update_det"
           />
-
           
         </div>
       </div>
@@ -84,8 +82,23 @@
         <div v-bind:class="{ active: windows[1][1] == 1 }" ref="1:1" class="card" @click="window_update(1,1)"></div>
         <div v-bind:class="{ active: windows[1][2] == 1 }" ref="1:2" class="card" @click="window_update(1,2)"></div>
       </div>
-
+      
     </div>
+    
+    <!-- <div class = "mdl-grid ">
+         <div class = "mdl-cell mdl-cell--2-col">
+         <h4 class="mdl-switch__label">Automatic Update:</h4>
+         </div>
+         <div class="mdl-layout-spacer"></div>
+         <div class = "mdl-cell mdl-cell--1-col " style="justify-content: right">
+         <toggle-button
+         v-model="automatic"
+         color="rgb(165, 205, 80)"
+         :sync="true"
+         :labels="true"
+         />
+         </div>
+         </div> -->
     
   </section>
 </template>
@@ -95,7 +108,7 @@
 <script>
 
  const axios = require('axios');
-
+ 
  var interpolateColor = function(color1, color2, factor) {
    if (arguments.length < 3) { factor = 0.5; }
    var result = color1.slice();
@@ -104,7 +117,6 @@
    }
    return result;
  };
-
  
  export default {
    
@@ -115,6 +127,7 @@
        paint : false,
        detection : false,
        loaded : false,
+       automatic : false,
        windows : [
          [0,0,0],
          [0,0,0]]
@@ -130,7 +143,7 @@
      detection: function() {
        if (this.loaded) this.cloud()
      }         
-     },
+   },
    
    beforeRouteEnter (to, from, next) {
      next(vm => {
@@ -154,11 +167,12 @@
      axios.get('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/operationmode')
           .then(this.load)
 
-     /* this.$nextTick(function () {
-      *   window.setInterval(() => {
-      *     this.poll();
-      *   },1000);
-      * }) */     
+     this.$nextTick(function () {
+       window.setInterval(() => {
+         /* if (this.automatic) this.poll(); */
+       },1000);
+     })
+     
    },
    
    methods : {
@@ -371,6 +385,10 @@
        if (!this.paint){
          axios.get('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/winstate')
               .then(this.updateWindows);
+
+         /* this.loaded = false
+          * axios.get('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/operationmode')
+          *     .then(this.load) */
        }
        
        

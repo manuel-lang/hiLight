@@ -94,18 +94,18 @@
    },
 
    mounted () {
-     
+          
      /* this.$nextTick(function () {
       *   window.setInterval(() => {
       *     this.poll();
       *   },1000);
-      *   }) */
+      * }) */
      
    },
 
    methods : {
 
-     prevent : function (event){
+     prevent : function (event) {
        /* console.log('something happened') */
        event.preventDefault()
        /* event.stopPropagation() */
@@ -150,17 +150,17 @@
        
      },
 
-     updateSlider :function(e){
+     updateSlider : function(e) {
        this.cloud()
      },
 
-     slide : function (){
+     slide : function () {
        let r = (this.upper - this.down)* (this.percent/100.0) + this.down;
        var canvas = this.$refs['gameCanvas'];
        this.repaint(canvas, r);
      },
 
-     changeButter : function(event){
+     changeButter : function(event) {
        var canvas = this.$refs['gameCanvas'];
        var mousePos = this.getMousePos(canvas, event);
        var m_y = mousePos.y
@@ -168,7 +168,7 @@
        this.cloud()
      },
 
-     repaint : function (canvas, r){
+     repaint : function (canvas, r) {
        var ctx = canvas.getContext("2d");
 
        this.percent = (100*(r - this.down) / (this.upper - this.down)).toFixed(0);
@@ -193,7 +193,8 @@
        };
      },
 
-     pollUser : function(){
+     pollUser : function() {
+
        axios.get('https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx/activeuser')
             .then(response => {
               this.user = response.data;
@@ -219,12 +220,13 @@
 	    });
      },
 
-     poll : function (){
+     poll : function () {
        this.pollUser()
      }
      
 
    }
+   
  }
 </script>
 
