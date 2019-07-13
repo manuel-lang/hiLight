@@ -3,8 +3,7 @@
   
   <header class="mdl-layout__header ">
     <div class="mdl-layout__header-row">
-      <span class="mdl-layout-title">Hi
-        Light</span>
+      <span class="mdl-layout-title title">HiLight</span>
     </div>
   </header>
   
@@ -155,6 +154,10 @@ export default {
    font-weight: 400;
    box-sizing: border-box;
    padding-top: 16px;
+ }
+
+ .title{
+   color: rgb(165, 205, 80);
  }
 
 </style>
