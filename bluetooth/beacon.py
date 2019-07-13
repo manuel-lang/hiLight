@@ -1,26 +1,20 @@
-import AWSIoTPythonSDK.MQTTLib as AWSIoTPyMQTT
+import requests
 import time
+import json
 
-cert_path = "certificates"
-HOST_NAME = "a2k3i43s7frss9-ats.iot.eu-central-1.amazonaws.com"
-ROOT_CA = "{}/AmazonRootCA1.pem".format(cert_path)
-PRIVATE_KEY = "{}/private.pem.key".format(cert_path)
-CERT_FILE = "{}/certificate.pem.crt".format(cert_path)
-
-# Connect to AWS
-myAWSIoTMQTTClient = AWSIoTPyMQTT.AWSIoTMQTTClient("BluetoothPi")
-myAWSIoTMQTTClient.configureEndpoint(HOST_NAME, 8883)
-myAWSIoTMQTTClient.configureCredentials(ROOT_CA, PRIVATE_KEY, CERT_FILE)
-myAWSIoTMQTTClient.configureConnectDisconnectTimeout(10)
-myAWSIoTMQTTClient.configureMQTTOperationTimeout(5)
-myAWSIoTMQTTClient.connect()
-print("Connection successful!")
+# defining the api-endpoint  
+API_ENDPOINT = "https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/activeuser"
 
 while True:
     # TODO: PUT OWN CODE HERE
     active_user = "Alan"
-    message = '{"active_user": "%s"}' % active_user
-    if not myAWSIoTMQTTClient.publish("bluetooth", message, 0):
-        print("Could not publish to AWS IoT!")
+    message = {"username": active_user}
+    print(message)
+    time.sleep(1)
+    continue
+    
+    response = requests.post(url = API_ENDPOINT, data = data)
+    print(response)
+
     time.sleep(1)
 

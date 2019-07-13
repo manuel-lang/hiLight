@@ -1,1 +1,1 @@
-AWSIoTPythonSDK
+requests
