@@ -1,5 +1,18 @@
 # hiLight
 
+hiLight is an automatic control system for smart windows. Using sensors and custom preferences, we ensure the perfect lighting for each employee in the office.
+
+## Magic behind
+
+![magic behind](https://i.imgur.com/HoE6zqv.png)
+
+## Components
+
+- [Frontend](https://github.com/manuel-lang/hiLight/tree/master/hilight): Setting custom lighting preferences and controlling smart windows directly if enabled.
+- [Person detector](https://github.com/manuel-lang/hiLight/tree/master/demo_person): Automatic people detection on the outside of the window. Darkens the windows if people are detected.
+- [Controlling](https://github.com/manuel-lang/hiLight/tree/master/iot): Control scripts for smart windows that can for instance be run from a Raspberry Pi.
+- [Beacon scanner](https://github.com/manuel-lang/hiLight/blob/master/blescan.py): Detecting which person is in the office and at what distance of the windows.
+
 ## API Documentation
 
 base url: https://c2xolt5232.execute-api.eu-central-1.amazonaws.com/xxx
